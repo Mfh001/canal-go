@@ -79,10 +79,11 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 				if col.GetValue() != "" {
 					m = append(m, col.GetName())
 					m = append(m, col.GetValue())
-					fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
+					fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
 				}
 
 			}
+			fmt.Println(fmt.Sprintf("%d", len(m)))
 			_, _ = gredis.HMSet(redisKey, m...)
 
 		case protocol.EventType_UPDATE:
