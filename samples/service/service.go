@@ -73,11 +73,11 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 			redisKey := tableName
 			var m = make(map[string]string)
 			for _, col := range rowData.GetAfterColumns() {
-				fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
 				m[col.GetName()] = col.GetValue()
+				fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
 			}
 			_, _ = gredis.HMSet(redisKey, m)
 
