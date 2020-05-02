@@ -1,10 +1,10 @@
 package service
 
 import (
+	"fmt"
 	protocol "github.com/withlin/canal-go/protocol"
 	"github.com/withlin/canal-go/samples/gredis"
 )
-
 
 //shop_id : s1id5ea3d3292adv0  update= false
 //open_id : oePKH5DRzZpwkW5YhSZ2cRNNz-f4  update= false
@@ -73,13 +73,14 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 			redisKey := tableName
 			var m = make(map[string]string)
 			for _, col := range rowData.GetAfterColumns() {
+				fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
 				m[col.GetName()] = col.GetValue()
 			}
 			_, _ = gredis.HMSet(redisKey, m)
-			//fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
+
 		case protocol.EventType_UPDATE:
 			redisKey := tableName
 			var m = make(map[string]string)
@@ -103,6 +104,5 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 			_, _ = gredis.Delete(redisKey)
 		}
 	}
-
 
 }
