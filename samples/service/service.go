@@ -84,16 +84,17 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 
 		case protocol.EventType_UPDATE:
 			redisKey := tableName
-			var m = make(map[string]string)
+			var m []string
 			for _, col := range rowData.GetAfterColumns() {
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
 				if col.GetUpdated() {
-					m[col.GetName()] = col.GetValue()
+					m = append(m, col.GetName())
+					m = append(m, col.GetValue())
 				}
 			}
-			_, _ = gredis.HMSet(redisKey, m)
+			_, _ = gredis.HMSet(redisKey, m...)
 		case protocol.EventType_DELETE:
 			redisKey := tableName
 			for _, col := range rowData.GetAfterColumns() {
