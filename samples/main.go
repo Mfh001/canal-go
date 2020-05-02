@@ -31,7 +31,7 @@ func main() {
 
 	// 192.168.199.17 替换成你的canal server的地址
 	// example 替换成-e canal.destinations=example 你自己定义的名字
-	connector := client.NewSimpleCanalConnector("192.168.199.17", 11111, "", "", "example", 60000, 60*60*1000)
+	connector := client.NewSimpleCanalConnector("39.98.196.152", 11111, "", "", "example", 60000, 60*60*1000)
 	err := connector.Connect()
 	if err != nil {
 		log.Println(err)
@@ -76,6 +76,80 @@ func main() {
 	}
 }
 
+
+//================> binlog[mysql-bin.000008 : 2910],name[global,shop_infos], eventType: UPDATE
+//-------> before
+//shop_id : s1id5ea3d3292adv0  update= false
+//open_id : oePKH5DRzZpwkW5YhSZ2cRNNz-f4  update= false
+//shop_name :   update= false
+//head_url : 11121  update= false
+//phone :   update= false
+//video_url :   update= false
+//menu :   update= false
+//titles : ["qq"]  update= false
+//is_open : 0  update= false
+//open_time :   update= false
+//close_time :   update= false
+//has_breakfast : 1  update= false
+//has_lunch : 0  update= false
+//has_dinner : 0  update= false
+//has_night_snack : 0  update= false
+//post_code : 0  update= false
+//address :   update= false
+//longitude : 0.000000000  update= false
+//latitude : 0.000000000  update= false
+//reg_time : 1587794729  update= false
+//business_url :   update= false
+//license_url :   update= false
+//health_url :   update= false
+//shop_type : 2  update= false
+//shop_type_btc : 1  update= false
+//qr_code_pay : 0  update= false
+//team_book : 1  update= false
+//check_pass : 0  update= false
+//sell_count : 0  update= false
+//sell_count_today : 0  update= false
+//sell_count_yesterday : 0  update= false
+//sell_amount : 0.0  update= false
+//sell_amount_today : 0.0  update= false
+//sell_amount_yesterday : 0.0  update= false
+//today_tick : 0  update= false
+//-------> after
+//shop_id : s1id5ea3d3292adv0  update= false
+//open_id : oePKH5DRzZpwkW5YhSZ2cRNNz-f4  update= false
+//shop_name :   update= false
+//head_url : 111211  update= true
+//phone :   update= false
+//video_url :   update= false
+//menu :   update= false
+//titles : ["qq"]  update= false
+//is_open : 0  update= false
+//open_time :   update= false
+//close_time :   update= false
+//has_breakfast : 1  update= false
+//has_lunch : 0  update= false
+//has_dinner : 0  update= false
+//has_night_snack : 0  update= false
+//post_code : 0  update= false
+//address :   update= false
+//longitude : 0.000000000  update= false
+//latitude : 0.000000000  update= false
+//reg_time : 1587794729  update= false
+//business_url :   update= false
+//license_url :   update= false
+//health_url :   update= false
+//shop_type : 2  update= false
+//shop_type_btc : 1  update= false
+//qr_code_pay : 0  update= false
+//team_book : 1  update= false
+//check_pass : 0  update= false
+//sell_count : 0  update= false
+//sell_count_today : 0  update= false
+//sell_count_yesterday : 0  update= false
+//sell_amount : 0.0  update= false
+//sell_amount_today : 0.0  update= false
+//sell_amount_yesterday : 0.0  update= false
+//today_tick : 0  update= false
 func printEntry(entrys []protocol.Entry) {
 
 	for _, entry := range entrys {
