@@ -97,6 +97,7 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 		case protocol.EventType_DELETE:
 			redisKey := tableName
 			for _, col := range rowData.GetAfterColumns() {
+				fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 					fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
