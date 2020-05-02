@@ -6,6 +6,7 @@ import (
 	"github.com/withlin/canal-go/samples/gredis"
 )
 
+
 //shop_id : s1id5ea3d3292adv0  update= false
 //open_id : oePKH5DRzZpwkW5YhSZ2cRNNz-f4  update= false
 //shop_name :   update= false
@@ -71,36 +72,28 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 		switch eventType {
 		case protocol.EventType_INSERT:
 			redisKey := tableName
-			var m []string
+			var m = make(map[string]string)
 			for _, col := range rowData.GetAfterColumns() {
+				fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
-				if col.GetValue() != "" {
-					m = append(m, col.GetName())
-					m = append(m, col.GetValue())
-					fmt.Println(fmt.Sprintf("%s : %s  update= %t", col.GetName(), col.GetValue(), col.GetUpdated()))
-				}
-
+				m[col.GetName()] = col.GetValue()
 			}
-			fmt.Println(fmt.Sprintf("%d", len(m)))
-			_, _ = gredis.HMSet(redisKey, m...)
+			_, _ = gredis.HMSet(redisKey, m)
 
 		case protocol.EventType_UPDATE:
 			redisKey := tableName
-			var m []string
+			var m = make(map[string]string)
 			for _, col := range rowData.GetAfterColumns() {
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
 				if col.GetUpdated() {
-					if col.GetValue() != "" {
-						m = append(m, col.GetName())
-						m = append(m, col.GetValue())
-					}
+					m[col.GetName()] = col.GetValue()
 				}
 			}
-			_, _ = gredis.HMSet(redisKey, m...)
+			_, _ = gredis.HMSet(redisKey, m)
 		case protocol.EventType_DELETE:
 			redisKey := tableName
 			for _, col := range rowData.GetAfterColumns() {
@@ -112,5 +105,6 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 			_, _ = gredis.Delete(redisKey)
 		}
 	}
+
 
 }
