@@ -71,15 +71,16 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 		switch eventType {
 		case protocol.EventType_INSERT:
 			redisKey := tableName
-			var m = make(map[string]string)
+			var m []string
 			for _, col := range rowData.GetAfterColumns() {
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
-				m[col.GetName()] = col.GetValue()
+				m = append(m, col.GetName())
+				m = append(m, col.GetValue())
 				fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
 			}
-			_, _ = gredis.HMSet(redisKey, m)
+			_, _ = gredis.HMSet(redisKey, m...)
 
 		case protocol.EventType_UPDATE:
 			redisKey := tableName
