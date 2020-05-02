@@ -76,8 +76,10 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
 				}
-				m = append(m, col.GetName())
-				m = append(m, col.GetValue())
+				if col.GetValue() != "" {
+					m = append(m, col.GetName())
+					m = append(m, col.GetValue())
+				}
 				fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
 			}
 			_, _ = gredis.HMSet(redisKey, m...)
@@ -90,8 +92,10 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 					redisKey += ":" + col.GetValue()
 				}
 				if col.GetUpdated() {
-					m = append(m, col.GetName())
-					m = append(m, col.GetValue())
+					if col.GetValue() != "" {
+						m = append(m, col.GetName())
+						m = append(m, col.GetValue())
+					}
 				}
 			}
 			_, _ = gredis.HMSet(redisKey, m...)
