@@ -2,6 +2,7 @@ package gredis
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/gomodule/redigo/redis"
@@ -101,6 +102,7 @@ func HMSet(key string, fields map[string]string) (bool, error) {
 
 	res, err := redis.Bool(conn.Do("HMSET", key, fields))
 	if err != nil {
+		fmt.Println(err.Error())
 		return false, err
 	}
 
