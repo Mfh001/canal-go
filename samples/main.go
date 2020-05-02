@@ -18,20 +18,21 @@ package main
 
 import (
 	"fmt"
+	"github.com/withlin/canal-go/samples/service"
 	"log"
 	"os"
 	"time"
 
+	"github.com/golang/protobuf/proto"
 	"github.com/withlin/canal-go/client"
 	protocol "github.com/withlin/canal-go/protocol"
-	"github.com/golang/protobuf/proto"
 )
 
 func main() {
 
 	// 192.168.199.17 替换成你的canal server的地址
 	// example 替换成-e canal.destinations=example 你自己定义的名字
-	connector := client.NewSimpleCanalConnector("39.98.196.152", 11111, "", "", "example", 60000, 60*60*1000)
+	connector := client.NewSimpleCanalConnector("127.0.0.1", 11111, "", "", "example", 60000, 60*60*1000)
 	err := connector.Connect()
 	if err != nil {
 		log.Println(err)
@@ -56,7 +57,6 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
-
 	for {
 
 		message, err := connector.Get(100, nil, nil)
@@ -70,7 +70,6 @@ func main() {
 			fmt.Println("===没有数据了===")
 			continue
 		}
-
 		printEntry(message.Entries)
 
 	}
@@ -115,41 +114,7 @@ func main() {
 //sell_amount_yesterday : 0.0  update= false
 //today_tick : 0  update= false
 //-------> after
-//shop_id : s1id5ea3d3292adv0  update= false
-//open_id : oePKH5DRzZpwkW5YhSZ2cRNNz-f4  update= false
-//shop_name :   update= false
-//head_url : 111211  update= true
-//phone :   update= false
-//video_url :   update= false
-//menu :   update= false
-//titles : ["qq"]  update= false
-//is_open : 0  update= false
-//open_time :   update= false
-//close_time :   update= false
-//has_breakfast : 1  update= false
-//has_lunch : 0  update= false
-//has_dinner : 0  update= false
-//has_night_snack : 0  update= false
-//post_code : 0  update= false
-//address :   update= false
-//longitude : 0.000000000  update= false
-//latitude : 0.000000000  update= false
-//reg_time : 1587794729  update= false
-//business_url :   update= false
-//license_url :   update= false
-//health_url :   update= false
-//shop_type : 2  update= false
-//shop_type_btc : 1  update= false
-//qr_code_pay : 0  update= false
-//team_book : 1  update= false
-//check_pass : 0  update= false
-//sell_count : 0  update= false
-//sell_count_today : 0  update= false
-//sell_count_yesterday : 0  update= false
-//sell_amount : 0.0  update= false
-//sell_amount_today : 0.0  update= false
-//sell_amount_yesterday : 0.0  update= false
-//today_tick : 0  update= false
+
 func printEntry(entrys []protocol.Entry) {
 
 	for _, entry := range entrys {
@@ -160,22 +125,16 @@ func printEntry(entrys []protocol.Entry) {
 
 		err := proto.Unmarshal(entry.GetStoreValue(), rowChange)
 		checkError(err)
-		if rowChange != nil {
-			eventType := rowChange.GetEventType()
-			header := entry.GetHeader()
-			fmt.Println(fmt.Sprintf("================> binlog[%s : %d],name[%s,%s], eventType: %s", header.GetLogfileName(), header.GetLogfileOffset(), header.GetSchemaName(), header.GetTableName(), header.GetEventType()))
+		eventType := rowChange.GetEventType()
+		header := entry.GetHeader()
+		fmt.Println(fmt.Sprintf("================> binlog[%s : %d],name[%s,%s], eventType: %s", header.GetLogfileName(), header.GetLogfileOffset(), header.GetSchemaName(), header.GetTableName(), header.GetEventType()))
+		if header.GetSchemaName() == "game" {
+			switch header.GetTableName() {
+			case "game_user":
+				service.SyncGameUser(header.GetTableName(), eventType, rowChange.GetRowDatas())
+			case "":
+			default:
 
-			for _, rowData := range rowChange.GetRowDatas() {
-				if eventType == protocol.EventType_DELETE {
-					printColumn(rowData.GetBeforeColumns())
-				} else if eventType == protocol.EventType_INSERT {
-					printColumn(rowData.GetAfterColumns())
-				} else {
-					fmt.Println("-------> before")
-					printColumn(rowData.GetBeforeColumns())
-					fmt.Println("-------> after")
-					printColumn(rowData.GetAfterColumns())
-				}
 			}
 		}
 	}
