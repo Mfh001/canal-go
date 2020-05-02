@@ -99,6 +99,7 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 			for _, col := range rowData.GetAfterColumns() {
 				if col.GetIsKey() {
 					redisKey += ":" + col.GetValue()
+					fmt.Println(fmt.Sprintf("%s : %s  update= %t", redisKey, col.GetValue(), col.GetUpdated()))
 					break
 				}
 			}
