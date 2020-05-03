@@ -118,6 +118,9 @@ func main() {
 func printEntry(entrys []protocol.Entry) {
 
 	for _, entry := range entrys {
+		header := entry.GetHeader()
+		fmt.Println(fmt.Sprintf("================> binlog[%s : %d],name[%s,%s], eventType: %s", header.GetLogfileName(), header.GetLogfileOffset(), header.GetSchemaName(), header.GetTableName(), header.GetEventType()))
+
 		if entry.GetEntryType() == protocol.EntryType_TRANSACTIONBEGIN || entry.GetEntryType() == protocol.EntryType_TRANSACTIONEND {
 			continue
 		}
@@ -126,7 +129,7 @@ func printEntry(entrys []protocol.Entry) {
 		err := proto.Unmarshal(entry.GetStoreValue(), rowChange)
 		checkError(err)
 		eventType := rowChange.GetEventType()
-		header := entry.GetHeader()
+
 		fmt.Println(fmt.Sprintf("================> binlog[%s : %d],name[%s,%s], eventType: %s", header.GetLogfileName(), header.GetLogfileOffset(), header.GetSchemaName(), header.GetTableName(), header.GetEventType()))
 		if header.GetSchemaName() == "game" {
 			switch header.GetTableName() {
