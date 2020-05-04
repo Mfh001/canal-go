@@ -3,6 +3,7 @@ package service
 import (
 	"fmt"
 	protocol "github.com/withlin/canal-go/protocol"
+	"github.com/withlin/canal-go/samples/bloom_filter"
 	"github.com/withlin/canal-go/samples/gredis"
 )
 
@@ -65,7 +66,7 @@ import (
 //province :   update= false
 //reg_time :   update= false
 
-func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*protocol.RowData) {
+func SyncGameUser(bloom *bloom_filter.BloomFilter, tableName string, eventType protocol.EventType, rowDatas []*protocol.RowData) {
 
 	for _, rowData := range rowDatas {
 		switch eventType {
@@ -79,6 +80,7 @@ func SyncGameUser(tableName string, eventType protocol.EventType, rowDatas []*pr
 				}
 				m[col.GetName()] = col.GetValue()
 			}
+			bloom.Put(redisKey)
 			_, _ = gredis.HMSet(redisKey, m)
 
 		case protocol.EventType_UPDATE:

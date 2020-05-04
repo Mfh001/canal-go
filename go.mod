@@ -5,6 +5,7 @@ require (
 	github.com/golang/protobuf v1.2.0
 	github.com/gomodule/redigo v1.8.0
 	github.com/samuel/go-zookeeper v0.0.0-20180130194729-c4fab1ac1bec
+	github.com/spaolacci/murmur3 v1.1.0
 	golang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect
 )
 

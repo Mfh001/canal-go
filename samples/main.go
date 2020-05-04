@@ -18,6 +18,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/withlin/canal-go/samples/bloom_filter"
 	"github.com/withlin/canal-go/samples/service"
 	"log"
 	"os"
@@ -57,6 +58,7 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
+	bloom := bloom_filter.NewBloomFilter(4,10000000)
 	for {
 
 		message, err := connector.Get(100, nil, nil)
@@ -70,12 +72,12 @@ func main() {
 			//fmt.Println("===没有数据了===")
 			continue
 		}
-		printEntry(message.Entries)
+		printEntry(message.Entries, bloom)
 
 	}
 }
 
-func printEntry(entrys []protocol.Entry) {
+func printEntry(entrys []protocol.Entry, bloom *bloom_filter.BloomFilter) {
 
 	for _, entry := range entrys {
 		header := entry.GetHeader()
@@ -92,7 +94,7 @@ func printEntry(entrys []protocol.Entry) {
 
 		fmt.Println(fmt.Sprintf("================> binlog[%s : %d],name[%s,%s], eventType: %s", header.GetLogfileName(), header.GetLogfileOffset(), header.GetSchemaName(), header.GetTableName(), header.GetEventType()))
 		if header.GetSchemaName() == "game" {
-			service.SyncGameUser(header.GetTableName(), eventType, rowChange.GetRowDatas())
+			service.SyncGameUser(bloom, header.GetTableName(), eventType, rowChange.GetRowDatas())
 		}
 	}
 }

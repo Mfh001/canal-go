@@ -153,3 +153,27 @@ func Incr(key string) (int, error) {
 	}
 	return incr, nil
 }
+
+func SetBit(key string, offset uint, value int) error{
+	conn := RedisConn.Get()
+	defer conn.Close()
+
+	_, err := conn.Do("SETBIT", key, offset, value)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func GetBit(key string, offset uint) (int, error) {
+	conn := RedisConn.Get()
+	defer conn.Close()
+
+	reply, err := redis.Int(conn.Do("GETBIT", key, offset))
+	if err != nil {
+		return 0, err
+	}
+
+	return reply, nil
+}
