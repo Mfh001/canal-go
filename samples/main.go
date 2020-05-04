@@ -67,14 +67,13 @@ func main() {
 		batchId := message.Id
 		if batchId == -1 || len(message.Entries) <= 0 {
 			time.Sleep(300 * time.Millisecond)
-			fmt.Println("===没有数据了===")
+			//fmt.Println("===没有数据了===")
 			continue
 		}
 		printEntry(message.Entries)
 
 	}
 }
-
 
 //================> binlog[mysql-bin.000008 : 2910],name[global,shop_infos], eventType: UPDATE
 //-------> before

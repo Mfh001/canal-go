@@ -95,7 +95,7 @@ func HMGet(key string, fields ...string) ([]interface{}, error) {
 	return reply, nil
 }
 
-func HMSet(key string, fields map[string]string) (bool, error) {
+func HMSet(key string, fields map[string]interface{}) (bool, error) {
 	conn := RedisConn.Get()
 	defer conn.Close()
 
