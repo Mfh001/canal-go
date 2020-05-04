@@ -58,7 +58,7 @@ func main() {
 		log.Println(err)
 		os.Exit(1)
 	}
-	bloom := bloom_filter.NewBloomFilter(4,10000000)
+	bloom := bloom_filter.NewBloomFilter(4,1000000)
 	for {
 
 		message, err := connector.Get(100, nil, nil)
