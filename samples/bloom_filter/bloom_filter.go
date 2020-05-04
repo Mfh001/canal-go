@@ -29,14 +29,14 @@ func (filter *BloomFilter) generateKey() {
 
 func (filter *BloomFilter) Put(data string) {
 	for i := uint(0); i < filter.FuncCount; i ++ {
-		offset := HashData([]byte(data), i)/filter.Len
+		offset := HashData([]byte(data), i)%filter.Len
 		_ = gredis.SetBit(filter.Key, offset, 1)
 	}
 }
 
 func (filter *BloomFilter) Has(data string) bool{
 	for i := uint(0); i < filter.FuncCount; i ++ {
-		offset := HashData([]byte(data), i)/filter.Len
+		offset := HashData([]byte(data), i)%filter.Len
 		val, _ := gredis.GetBit(filter.Key, offset)
 		if val != 1 {
 			return false
