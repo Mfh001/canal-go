@@ -17,7 +17,7 @@ func init() {
 		IdleTimeout: 200,
 		Wait:        true,
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.Dial("tcp", "127.0.0.1:6379")
+			c, err := redis.Dial("tcp", "172.17.0.2:6379")
 			if err != nil {
 				return nil, err
 			}
